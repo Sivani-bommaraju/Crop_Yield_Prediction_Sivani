@@ -74,7 +74,7 @@ def authenticate_user(email: str, password: str):
     if user is None:
         return None
 
-    if not verify_password(password, user["password"]):
+    if not verify_password(password, user["password_hash"]):
         return None
 
     token = create_access_token({
@@ -85,5 +85,10 @@ def authenticate_user(email: str, password: str):
     return {
         "access_token": token,
         "token_type": "bearer",
-        "role": user["role"]
+        "user": {
+            "id": str(user["_id"]),
+            "full_name": user["full_name"],
+            "email": user["email"],
+            "role": user["role"]
+        }
     }
