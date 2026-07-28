@@ -1,183 +1,152 @@
 import { Navigate } from "react-router-dom";
+import FeatureCard from "../components/FeatureCard";
+import Navbar from "../components/Navbar";
+import Hero from "../components/Hero";
+import StatCard from "../components/StatCard";
+import FarmerProfileCard from "../components/FarmerProfileCard";
+import WeatherCard from "../components/WeatherCard";
+import Footer from "../components/Footer";
+import AIInsights from "../components/AIInsights";
+import PredictionSummary from "../components/PredictionSummary";
+import RecentActivity from "../components/RecentActivity";
+
 import {
-  Leaf,
   User,
-  Database,
   ShieldCheck,
-  LogOut,
-  Sprout,
+  Database,
+  Activity,
+} from "lucide-react";
+
+import {
+  Wheat,
+  CloudSun,
+  BrainCircuit,
+  ScanSearch,
 } from "lucide-react";
 
 export default function Home() {
+
   const token = localStorage.getItem("token");
 
-  if (!token) {
+  if (!token)
     return <Navigate to="/" />;
-  }
 
-  const storedUser = localStorage.getItem("user");
-
-const user = storedUser
-  ? JSON.parse(storedUser)
-  : {
-      full_name: "Guest",
-      email: "",
-      role: ""
-    };
+  const user = JSON.parse(localStorage.getItem("user")) || {
+    full_name: "Farmer",
+    role: "farmer",
+  };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
     window.location.href = "/";
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-lime-50">
 
-      {/* Navbar */}
-      <nav className="bg-green-700 shadow-lg">
-        <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-lime-100">
 
-          <div className="flex items-center gap-3">
-            <Leaf className="text-white" size={34} />
-            <div>
-              <h1 className="text-2xl font-bold text-white">
-                YieldSense AI
-              </h1>
-              <p className="text-green-100 text-sm">
-                Crop Yield Prediction Platform
-              </p>
-            </div>
-          </div>
+      <Navbar
+        user={user}
+        logout={logout}
+      />
 
-          <button
-            onClick={logout}
-            className="bg-white text-green-700 px-5 py-2 rounded-xl flex items-center gap-2 hover:bg-gray-100"
-          >
-            <LogOut size={18} />
-            Logout
-          </button>
+      <Hero user={user} />
 
-        </div>
-      </nav>
+      <section className="max-w-7xl mx-auto px-8 mt-14">
 
-      {/* Welcome */}
+  <div className="flex justify-between items-center mb-8">
 
-      <div className="max-w-7xl mx-auto px-8 mt-10">
+    <div>
 
-        <h1 className="text-4xl font-bold text-gray-800">
-          Welcome, {user.full_name} 👋
-        </h1>
+      <h2 className="text-3xl font-bold text-gray-800">
+        AI Services
+      </h2>
 
-        <p className="text-gray-600 mt-2">
-          Smart AI-powered agriculture management system.
-        </p>
-
-      </div>
-
-      {/* Cards */}
-
-      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-8 px-8 mt-10">
-
-        <div className="bg-white rounded-3xl shadow-lg p-6">
-
-          <User className="text-green-700 mb-4" size={40} />
-
-          <h2 className="text-xl font-bold">
-            User
-          </h2>
-
-          <p className="mt-4">
-            <strong>Name:</strong> {user.full_name}
-          </p>
-
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-
-          <p>
-            <strong>Role:</strong> {user.role}
-          </p>
-
-        </div>
-
-        <div className="bg-white rounded-3xl shadow-lg p-6">
-
-          <ShieldCheck
-            className="text-green-700 mb-4"
-            size={40}
-          />
-
-          <h2 className="text-xl font-bold">
-            Authentication
-          </h2>
-
-          <ul className="mt-4 space-y-2">
-            <li>✅ JWT Active</li>
-            <li>✅ Login Successful</li>
-            <li>✅ Protected Routes</li>
-          </ul>
-
-        </div>
-
-        <div className="bg-white rounded-3xl shadow-lg p-6">
-
-          <Database
-            className="text-green-700 mb-4"
-            size={40}
-          />
-
-          <h2 className="text-xl font-bold">
-            Backend Status
-          </h2>
-
-          <ul className="mt-4 space-y-2">
-            <li>🟢 FastAPI Running</li>
-            <li>🟢 MongoDB Connected</li>
-            <li>🟢 APIs Working</li>
-          </ul>
-
-        </div>
-
-      </div>
-
-      {/* Upcoming */}
-
-      <div className="max-w-7xl mx-auto px-8 mt-12">
-
-        <div className="bg-white rounded-3xl shadow-lg p-8">
-
-          <div className="flex items-center gap-3 mb-6">
-            <Sprout className="text-green-700" />
-            <h2 className="text-2xl font-bold">
-              Upcoming Modules
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-            <div className="bg-green-50 rounded-xl p-5">
-              🌾 Crop Information
-            </div>
-
-            <div className="bg-blue-50 rounded-xl p-5">
-              🌦 Weather API
-            </div>
-
-            <div className="bg-yellow-50 rounded-xl p-5">
-              🤖 AI Prediction
-            </div>
-
-            <div className="bg-purple-50 rounded-xl p-5">
-              📊 Analytics Dashboard
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
+      <p className="text-gray-500 mt-2">
+        Intelligent tools powered by Machine Learning.
+      </p>
 
     </div>
+
+  </div>
+
+  <section className="max-w-7xl mx-auto px-8 mt-14 mb-20">
+
+  <div className="grid lg:grid-cols-2 gap-8">
+
+    <FarmerProfileCard
+      user={user}
+    />
+
+    <WeatherCard />
+
+  </div>
+
+</section>
+
+
+<section className="max-w-7xl mx-auto px-8 mt-14">
+
+  <div className="grid lg:grid-cols-3 gap-8">
+
+    <div className="lg:col-span-2">
+      <AIInsights />
+    </div>
+
+    <PredictionSummary />
+
+  </div>
+
+</section>
+
+<section className="max-w-7xl mx-auto px-8 mt-10 mb-20">
+
+  <RecentActivity />
+
+</section>
+
+  <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-8 mb-20">
+
+    <FeatureCard
+      icon={<Wheat size={30} />}
+      title="Crop Recommendation"
+      description="Suggests the best crops based on soil, irrigation and regional conditions."
+      color="bg-green-600"
+      button="Explore"
+    />
+
+    <FeatureCard
+      icon={<BrainCircuit size={30} />}
+      title="Yield Prediction"
+      description="Predict crop yield using historical agricultural and environmental data."
+      color="bg-blue-600"
+      button="Predict"
+    />
+
+    <FeatureCard
+      icon={<CloudSun size={30} />}
+      title="Weather Intelligence"
+      description="Monitor weather conditions that influence crop growth and productivity."
+      color="bg-yellow-500"
+      button="View Weather"
+    />
+
+    <FeatureCard
+      icon={<ScanSearch size={30} />}
+      title="Disease Detection"
+      description="Upload crop images and identify plant diseases using Deep Learning."
+      color="bg-red-500"
+      button="Detect"
+    />
+
+  </div>
+
+</section>
+
+<Footer />
+
+    </div>
+
   );
+
 }
