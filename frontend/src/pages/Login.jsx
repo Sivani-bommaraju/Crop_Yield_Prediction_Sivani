@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Leaf } from "lucide-react";
 import { loginUser } from "../services/authService";
+import { auth, googleProvider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
+import { FcGoogle } from "react-icons/fc";
+import { googleLoginBackend } from "../services/authService";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -20,33 +24,75 @@ export default function Login() {
       [e.target.name]: e.target.value,
     });
   };
+const googleLogin = async () => {
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  try {
 
-    setLoading(true);
-    setMessage("");
+    const result = await signInWithPopup(
+      auth,
+      googleProvider
+    );
 
-    try {
-      const res = await loginUser(form);
+    const firebaseUser = result.user;
 
-      localStorage.setItem("token", res.access_token);
+    const idToken = await firebaseUser.getIdToken();
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.user)
-      );
+    const res = await googleLoginBackend(idToken);
 
-      navigate("/home");
+    localStorage.setItem(
+      "token",
+      res.access_token
+    );
 
-    } catch (err) {
-      setMessage(
-        err.response?.data?.detail || "Login Failed"
-      );
+    localStorage.setItem(
+      "user",
+      JSON.stringify(res.user)
+    );
+
+    navigate("/home");
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  setLoading(true);
+  setMessage("");
+
+  try {
+    const res = await loginUser(form);
+
+    console.log("LOGIN RESPONSE:", res);
+
+    localStorage.setItem("token", res.access_token);
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(res.user)
+    );
+
+    navigate("/home");
+
+  } catch (err) {
+    console.log(err.response?.data);
+
+    const detail = err.response?.data?.detail;
+
+    if (Array.isArray(detail)) {
+      setMessage(detail[0].msg);
+    } else {
+      setMessage(detail || "Login Failed");
     }
+  }
 
-    setLoading(false);
-  };
+  setLoading(false);
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-lime-100 flex items-center justify-center px-6">
@@ -94,6 +140,16 @@ export default function Login() {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+
+
+<button
+  type="button"
+  onClick={googleLogin}
+  className="w-full mt-4 border rounded-xl py-3 flex items-center justify-center gap-3 hover:bg-gray-50 transition"
+>
+  <FcGoogle size={24}/>
+  Continue with Google
+</button>
 
         </form>
 
