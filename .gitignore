@@ -21,3 +21,9 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# ML datasets (large files)
+ML/datasets/
+
+# CSV datasets
+*.csv

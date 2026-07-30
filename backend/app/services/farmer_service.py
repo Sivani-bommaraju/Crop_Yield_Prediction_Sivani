@@ -4,21 +4,36 @@ from app.models.farmer_model import create_farmer_document
 farmers_collection = db["farmer_profiles"]
 
 
-def create_farmer_profile(user_id, profile):
+def save_farmer_profile(user_id, profile):
 
     document = create_farmer_document(
         user_id=user_id,
-        state=profile.state,
-        district=profile.district,
-        village=profile.village,
-        land_size=profile.land_size,
-        soil_type=profile.soil_type,
-        irrigation=profile.irrigation,
-        preferred_crops=profile.preferred_crops
+        profile=profile
     )
 
-    result = farmers_collection.insert_one(document)
+    farmers_collection.update_one(
+        {"user_id": user_id},
+        {"$set": document},
+        upsert=True
+    )
 
-    document["_id"] = str(result.inserted_id)
+    farmer = farmers_collection.find_one(
+        {"user_id": user_id}
+    )
 
-    return document
+    farmer["_id"] = str(farmer["_id"])
+
+    return farmer
+
+
+def get_farmer_profile(user_id):
+
+    farmer = farmers_collection.find_one(
+        {"user_id": user_id}
+    )
+
+    if farmer:
+
+        farmer["_id"] = str(farmer["_id"])
+
+    return farmer

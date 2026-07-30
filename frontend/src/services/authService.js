@@ -9,3 +9,12 @@ export const loginUser = async (data) => {
   const response = await api.post("/auth/login", data);
   return response.data;
 };
+
+export const googleLoginBackend = async (idToken) => {
+
+  const response = await api.post("/auth/google", {
+    idToken,
+  });
+
+  return response.data;
+};
