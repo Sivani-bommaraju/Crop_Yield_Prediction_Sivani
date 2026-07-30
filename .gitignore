@@ -27,3 +27,18 @@ ML/datasets/
 
 # CSV datasets
 *.csv
+
+
+# Python virtual environment
+backend/venv/
+
+# Environment variables
+.env
+*.env
+
+# Firebase secrets
+backend/firebase/*.json
+
+# Python cache
+__pycache__/
+*.pyc
