@@ -1,44 +1,71 @@
-# Dependencies
+# -----------------------
+# Node.js
+# -----------------------
 node_modules/
+dist/
+build/
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
 
-# Environment variables
+# -----------------------
+# Python
+# -----------------------
+backend/venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# -----------------------
+# Environment Variables
+# -----------------------
 .env
-.env.local
+.env.*
+*.env
 
-# Build files
-dist/
-build/
+# -----------------------
+# Firebase Secrets
+# -----------------------
+backend/firebase/*.json
 
-# OS files
-.DS_Store
-Thumbs.db
+# -----------------------
+# ML Datasets
+# -----------------------
+ML/datasets/
+datasets/
+data/
+*.csv
+*.xlsx
+*.xls
+*.parquet
+*.h5
+*.pkl
+*.joblib
 
+# -----------------------
 # IDE
+# -----------------------
 .vscode/
 .idea/
 
-# ML datasets (large files)
+# -----------------------
+# OS
+# -----------------------
+.DS_Store
+Thumbs.db
+
+
+# ML datasets
 ML/datasets/
 
-# CSV datasets
+# Ignore large data/model files
 *.csv
-
-
-# Python virtual environment
-backend/venv/
-
-# Environment variables
-.env
-*.env
-
-# Firebase secrets
-backend/firebase/*.json
-
-# Python cache
-__pycache__/
-*.pyc
+*.xlsx
+*.xls
+*.parquet
+*.h5
+*.pkl
+*.joblib

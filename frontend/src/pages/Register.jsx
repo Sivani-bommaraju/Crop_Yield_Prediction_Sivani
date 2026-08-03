@@ -105,6 +105,7 @@ export default function Register() {
           >
             <option value="farmer">Farmer</option>
             <option value="admin">Admin</option>
+            <option value="agricultural_officer"></option>
           </select>
 
           <button

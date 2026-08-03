@@ -44,12 +44,30 @@ const googleLogin = async () => {
       res.access_token
     );
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(res.user)
-    );
+localStorage.setItem("token", res.access_token);
 
+localStorage.setItem(
+  "user",
+  JSON.stringify(res.user)
+);
+
+localStorage.setItem(
+  "role",
+  res.user.role
+);
+
+switch (res.user.role) {
+  case "admin":
+    navigate("/admin");
+    break;
+
+  case "agricultural_officer":
+    navigate("/officer");
+    break;
+
+  default:
     navigate("/home");
+}
 
   } catch (err) {
 
@@ -70,14 +88,30 @@ const handleSubmit = async (e) => {
 
     console.log("LOGIN RESPONSE:", res);
 
-    localStorage.setItem("token", res.access_token);
+localStorage.setItem("token", res.access_token);
 
-    localStorage.setItem(
-      "user",
-      JSON.stringify(res.user)
-    );
+localStorage.setItem(
+  "user",
+  JSON.stringify(res.user)
+);
 
+localStorage.setItem(
+  "role",
+  res.user.role
+);
+
+switch (res.user.role) {
+  case "admin":
+    navigate("/admin");
+    break;
+
+  case "agricultural_officer":
+    navigate("/officer");
+    break;
+
+  default:
     navigate("/home");
+}
 
   } catch (err) {
     console.log(err.response?.data);
