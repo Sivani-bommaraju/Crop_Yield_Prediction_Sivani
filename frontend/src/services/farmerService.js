@@ -90,3 +90,21 @@ export const saveFarmerProfile = async (data) => {
 
   return res.data;
 };
+
+
+
+export const getFarmerAdvisories = async () => {
+
+    const token = localStorage.getItem("token");
+
+    const res = await api.get(
+        "/farmer/advisories",
+        {
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        }
+    );
+
+    return res.data;
+};

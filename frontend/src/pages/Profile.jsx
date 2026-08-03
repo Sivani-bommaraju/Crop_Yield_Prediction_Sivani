@@ -209,21 +209,38 @@ useEffect(() => {
 //     }
 
 // };
+
+const toNumberOrNull = (value) =>
+  value === "" || value === null
+    ? null
+    : Number(value);
+
 const handleSave = async () => {
+
+  const payload = {
+
+    ...form,
+
+    age: toNumberOrNull(form.age),
+    land_size: toNumberOrNull(form.land_size),
+    soil_ph: toNumberOrNull(form.soil_ph),
+    nitrogen: toNumberOrNull(form.nitrogen),
+    phosphorus: toNumberOrNull(form.phosphorus),
+    potassium: toNumberOrNull(form.potassium),
+    organic_carbon: toNumberOrNull(form.organic_carbon),
+    annual_rainfall: toNumberOrNull(form.annual_rainfall),
+
+  };
 
   try {
 
-    await saveFarmerProfile(form);
+    await saveFarmerProfile(payload);
 
     alert("Profile saved successfully!");
 
-  }
+  } catch (err) {
 
-  catch (err) {
-
-    console.error(err);
-
-    alert("Unable to save profile");
+    console.log(err.response?.data);
 
   }
 
@@ -234,29 +251,43 @@ const loadProfile = async () => {
 
         const profile = await getProfile();
 
-        setForm(prev=>({
+        setForm(prev => ({
 
-            ...prev,
+  ...prev,
 
-            state: profile.state,
+  phone: data.personal?.phone || "",
+  age: data.personal?.age || "",
+  gender: data.personal?.gender || "",
 
-            district: profile.district,
+  farm_name: data.farm?.farm_name || "",
+  state: data.farm?.state || "",
+  district: data.farm?.district || "",
+  village: data.farm?.village || "",
+  land_size: data.farm?.land_size || "",
 
-            village: profile.village,
+  soil_type: data.soil?.soil_type || "",
+  soil_ph: data.soil?.soil_ph || "",
+  nitrogen: data.soil?.nitrogen || "",
+  phosphorus: data.soil?.phosphorus || "",
+  potassium: data.soil?.potassium || "",
+  organic_carbon: data.soil?.organic_carbon || "",
 
-            land_size: profile.land_size,
+  irrigation: data.water?.irrigation || "",
+  water_source: data.water?.water_source || "",
+  annual_rainfall: data.water?.annual_rainfall || "",
 
-            soil_type: profile.soil_type,
+  primary_crop: data.crop?.primary_crop || "",
+  secondary_crop: data.crop?.secondary_crop || "",
+  season: data.crop?.season || "",
+  crop_rotation: data.crop?.crop_rotation || "",
 
-            irrigation: profile.irrigation,
+  tractor: data.equipment?.tractor || false,
+  harvester: data.equipment?.harvester || false,
+  seeder: data.equipment?.seeder || false,
+  sprayer: data.equipment?.sprayer || false,
+  sensors: data.equipment?.sensors || false,
 
-            primary_crop:
-                profile.preferred_crops?.[0] || "",
-
-            secondary_crop:
-                profile.preferred_crops?.[1] || "",
-
-        }));
+}));
 
     }
 
