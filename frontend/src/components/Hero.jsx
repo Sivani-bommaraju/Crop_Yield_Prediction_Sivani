@@ -7,10 +7,14 @@ import {
   MapPin,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 export default function Hero({ user }) {
   const hour = new Date().getHours();
+  const navigate = useNavigate();
 
   let greeting = "Good Evening";
+  
 
   if (hour < 12) greeting = "Good Morning";
   else if (hour < 18) greeting = "Good Afternoon";
@@ -62,7 +66,7 @@ export default function Hero({ user }) {
 
             <div className="flex flex-wrap gap-4 mt-10">
 
-              <button className="bg-white text-green-700 font-semibold px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-2">
+              <button onClick={() => navigate("/prediction")} className="bg-white text-green-700 font-semibold px-8 py-4 rounded-xl shadow-lg hover:scale-105 transition flex items-center gap-2">
 
                 Predict Yield
 
@@ -70,11 +74,11 @@ export default function Hero({ user }) {
 
               </button>
 
-              <button className="border border-white text-white px-8 py-4 rounded-xl hover:bg-white/20 transition">
-
+             <button onClick={() => navigate("/profile")} className="border border-white text-white px-8 py-4 rounded-xl hover:bg-white/20 transition">
+                  
                 View Profile
-
-              </button>
+                
+             </button>
 
             </div>
 

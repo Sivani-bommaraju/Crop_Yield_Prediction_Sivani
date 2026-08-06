@@ -55,7 +55,7 @@ export default function Home() {
           return;
         }
 
-        console.log("PROFILE FROM API:", data);
+        
 
         setProfile(data);
 
@@ -188,12 +188,13 @@ useEffect(() => {
           />
 
           <FeatureCard
-            icon={<BrainCircuit size={30} />}
-            title="Yield Prediction"
-            description="Predict crop yield using historical agricultural and environmental data."
-            color="bg-blue-600"
-            button="Predict"
-          />
+  icon={<BrainCircuit size={30} />}
+  title="Yield Prediction"
+  description="Predict crop yield using historical agricultural and environmental data."
+  color="bg-blue-600"
+  button="Predict"
+  onClick={() => navigate("/prediction")}
+/>
 
           <FeatureCard
             icon={<CloudSun size={30} />}
