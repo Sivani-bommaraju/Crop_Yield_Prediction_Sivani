@@ -104,8 +104,7 @@ export default function Register() {
             className="w-full border rounded-xl px-4 py-3"
           >
             <option value="farmer">Farmer</option>
-            <option value="admin">Admin</option>
-            <option value="agricultural_officer"></option>
+            <option value="agricultural_officer">Agricultural Officer</option>
           </select>
 
           <button

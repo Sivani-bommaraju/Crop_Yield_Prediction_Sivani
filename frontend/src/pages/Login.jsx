@@ -86,7 +86,7 @@ const handleSubmit = async (e) => {
   try {
     const res = await loginUser(form);
 
-    console.log("LOGIN RESPONSE:", res);
+    
 
 localStorage.setItem("token", res.access_token);
 

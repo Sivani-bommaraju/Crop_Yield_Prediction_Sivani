@@ -6,6 +6,7 @@ import {
   Phone,
   Heart,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -54,35 +55,51 @@ export default function Footer() {
 
         <div>
 
-          <h3 className="text-white text-xl font-semibold mb-5">
-            Quick Links
-          </h3>
+  <h3 className="text-white text-xl font-semibold mb-5">
+    Quick Links
+  </h3>
 
-          <ul className="space-y-3">
+  <ul className="space-y-3">
 
-            <li className="hover:text-green-400 cursor-pointer">
-              Home
-            </li>
+    <li>
+      <Link
+        to="/home"
+        className="hover:text-green-400 transition-colors"
+      >
+        Home
+      </Link>
+    </li>
 
-            <li className="hover:text-green-400 cursor-pointer">
-              Crop Recommendation
-            </li>
+    <li>
+      <Link
+        to="/crop-recommendation"
+        className="hover:text-green-400 transition-colors"
+      >
+        Crop Recommendation
+      </Link>
+    </li>
 
-            <li className="hover:text-green-400 cursor-pointer">
-              Yield Prediction
-            </li>
+    <li>
+      <Link
+        to="/prediction"
+        className="hover:text-green-400 transition-colors"
+      >
+        Yield Prediction
+      </Link>
+    </li>
 
-            <li className="hover:text-green-400 cursor-pointer">
-              Disease Detection
-            </li>
+    <li>
+      <Link
+        to="/profile"
+        className="hover:text-green-400 transition-colors"
+      >
+        Profile
+      </Link>
+    </li>
 
-            <li className="hover:text-green-400 cursor-pointer">
-              Weather Intelligence
-            </li>
+  </ul>
 
-          </ul>
-
-        </div>
+</div>
 
         
 

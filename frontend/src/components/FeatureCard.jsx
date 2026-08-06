@@ -6,6 +6,7 @@ export default function FeatureCard({
   description,
   color,
   button,
+  onClick,
 }) {
   return (
     <div className="group bg-white rounded-3xl p-7 shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border border-gray-100">
@@ -25,10 +26,10 @@ export default function FeatureCard({
       </p>
 
       <button
+        onClick={onClick}
         className="mt-8 flex items-center gap-2 text-green-700 font-semibold group-hover:gap-4 transition-all"
       >
         {button}
-
         <ArrowRight size={18} />
       </button>
 
