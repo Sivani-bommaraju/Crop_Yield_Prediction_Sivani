@@ -3,6 +3,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.schemas.farmer_schema import FarmerProfile
 from app.auth.dependencies import get_current_user
 
+from app.services.farmer_recommendation_service import (
+    get_farmer_crop_recommendations,
+)
+
 from app.services.farmer_service import (
     save_farmer_profile,
     get_farmer_profile,
@@ -103,3 +107,21 @@ def get_advisories(
         }
         for item in data
     ]
+
+
+@router.get("/recommendations")
+def get_crop_recommendations(
+    current_user=Depends(get_current_user)
+):
+
+    result = get_farmer_crop_recommendations(
+        current_user["user_id"]
+    )
+
+    if "error" in result:
+        raise HTTPException(
+            status_code=400,
+            detail=result
+        )
+
+    return result

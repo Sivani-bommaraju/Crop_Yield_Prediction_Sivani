@@ -1,18 +1,5 @@
 import api from "./api";
 
-// export const getFarmerProfile = async () => {
-
-//   const token = localStorage.getItem("token");
-
-//   const response = await api.get("/farmer/profile", {
-//     headers: {
-//       Authorization: `Bearer ${token}`,
-//     },
-//   });
-
-//   return response.data;
-// };
-
 export const createFarmerProfile = async (profile) => {
 
   const token = localStorage.getItem("token");
@@ -47,25 +34,6 @@ export const updateFarmerProfile = async (profile) => {
     return response.data;
 
 };
-
-
-
-// export const saveFarmerProfile = async (data) => {
-
-//     const token = localStorage.getItem("token");
-
-//     const response = await api.put(
-//         "/farmer/profile",
-//         data,
-//         {
-//             headers: {
-//                 Authorization: `Bearer ${token}`,
-//             },
-//         }
-//     );
-
-//     return response.data;
-// };
 
 
 
@@ -107,4 +75,24 @@ export const getFarmerAdvisories = async () => {
     );
 
     return res.data;
+};
+
+
+import axios from "axios";
+
+const API_URL = "http://localhost:8000";
+
+export const getFarmerRecommendations = async () => {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(
+        `${API_URL}/farmer/recommendations`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
+
+    return response.data;
 };

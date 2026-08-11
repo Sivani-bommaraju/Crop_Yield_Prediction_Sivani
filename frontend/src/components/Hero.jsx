@@ -52,7 +52,7 @@ export default function Hero({ user }) {
 
               <br />
 
-              {user.full_name} 🌾
+              {user.full_name} 
 
             </h1>
 
