@@ -24,15 +24,12 @@ export default function Hero({ user }) {
 
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-green-700 via-emerald-600 to-lime-600 shadow-2xl">
 
-        {/* Decorative Circles */}
 
         <div className="absolute -top-20 -right-20 w-72 h-72 bg-white/10 rounded-full"></div>
 
         <div className="absolute -bottom-24 left-0 w-60 h-60 bg-white/10 rounded-full"></div>
 
         <div className="grid lg:grid-cols-2 gap-10 items-center p-12">
-
-          {/* Left */}
 
           <div className="relative z-10">
 
@@ -84,7 +81,6 @@ export default function Hero({ user }) {
 
           </div>
 
-          {/* Right */}
 
           <div className="relative z-10">
 

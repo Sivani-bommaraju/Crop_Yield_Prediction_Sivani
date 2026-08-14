@@ -24,13 +24,6 @@ router = APIRouter(
 
 advisories = db["advisories"]
 
-
-
-# =========================
-# FARMER PROFILE
-# =========================
-
-
 @router.put("/profile")
 def save_profile(
     profile: FarmerProfile,
@@ -67,12 +60,6 @@ def read_profile(
     return farmer
 
 
-
-
-
-# =========================
-# FARMER ADVISORIES
-# =========================
 from app.auth.dependencies import get_current_user
 from fastapi import Depends
 @router.get("/advisories")

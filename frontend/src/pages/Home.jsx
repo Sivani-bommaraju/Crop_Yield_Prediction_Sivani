@@ -138,9 +138,12 @@ useEffect(() => {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-8 mt-14">
-        <AdvisoryCard advisories={advisories}/>
-      </section>
+      <section
+  id="advisories"
+  className="max-w-7xl mx-auto px-8 mt-14 scroll-mt-28"
+>
+  <AdvisoryCard advisories={advisories} />
+</section>
 
 
       <section className="max-w-7xl mx-auto px-8 mt-14">
@@ -177,44 +180,47 @@ useEffect(() => {
 
       <section className="max-w-7xl mx-auto px-8 mt-14 mb-20">
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
+  <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-8">
 
-          <FeatureCard
-            icon={<Wheat size={30} />}
-            title="Crop Recommendation"
-            description="Suggests the best crops based on soil, irrigation and regional conditions."
-            color="bg-green-600"
-            button="Explore"
-          />
+    <FeatureCard
+      icon={<Wheat size={30} />}
+      title="Crop Recommendation"
+      description="Get AI-powered crop recommendations based on soil, rainfall and farm conditions."
+      color="bg-green-600"
+      button="Explore"
+      onClick={() => navigate("/prediction#crop")}
+    />
 
-          <FeatureCard
-  icon={<BrainCircuit size={30} />}
-  title="Yield Prediction"
-  description="Predict crop yield using historical agricultural and environmental data."
-  color="bg-blue-600"
-  button="Predict"
-  onClick={() => navigate("/prediction")}
-/>
+    <FeatureCard
+      icon={<BrainCircuit size={30} />}
+      title="Yield Prediction"
+      description="Predict crop yield using Machine Learning and agricultural data."
+      color="bg-blue-600"
+      button="Predict"
+      onClick={() => navigate("/prediction#yield")}
+    />
 
-          <FeatureCard
-            icon={<CloudSun size={30} />}
-            title="Weather Intelligence"
-            description="Monitor weather conditions that influence crop growth and productivity."
-            color="bg-yellow-500"
-            button="View Weather"
-          />
+    <FeatureCard
+      icon={<CloudSun size={30} />}
+      title="Weather Intelligence"
+      description="Analyse rainfall, temperature and humidity conditions affecting crop growth."
+      color="bg-yellow-500"
+      button="View Weather"
+      onClick={() => navigate("/prediction#weather")}
+    />
 
-          <FeatureCard
-            icon={<ScanSearch size={30} />}
-            title="Disease Detection"
-            description="Upload crop images and identify plant diseases using Deep Learning."
-            color="bg-red-500"
-            button="Detect"
-          />
+    <FeatureCard
+      icon={<ScanSearch size={30} />}
+      title="Soil Analysis"
+      description="Analyse nitrogen, phosphorus, potassium, pH and overall soil quality."
+      color="bg-amber-600"
+      button="Analyse Soil"
+      onClick={() => navigate("/prediction#soil")}
+    />
 
-        </div>
+  </div>
 
-      </section>
+</section>
 
       <Footer />
 

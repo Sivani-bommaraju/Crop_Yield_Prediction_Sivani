@@ -22,10 +22,6 @@ def analyze_weather(state: str):
     ]
 
 
-    # ==========================================
-    # WEATHER DATA NOT AVAILABLE
-    # ==========================================
-
     if state_data.empty:
 
         return {
@@ -38,9 +34,6 @@ def analyze_weather(state: str):
         }
 
 
-    # ==========================================
-    # AVERAGES
-    # ==========================================
 
     avg_temp = float(
         round(
@@ -64,10 +57,6 @@ def analyze_weather(state: str):
     )
 
 
-    # ==========================================
-    # RAINFALL ANALYSIS
-    # ==========================================
-
     if avg_rainfall < 700:
 
         rainfall_status = "Low Rainfall"
@@ -81,9 +70,6 @@ def analyze_weather(state: str):
         rainfall_status = "Normal Rainfall"
 
 
-    # ==========================================
-    # TEMPERATURE ANALYSIS
-    # ==========================================
 
     if avg_temp > 35:
 
@@ -97,10 +83,6 @@ def analyze_weather(state: str):
 
         temperature_status = "Optimal Temperature"
 
-
-    # ==========================================
-    # WEATHER IMPACT
-    # ==========================================
 
     if rainfall_status == "Low Rainfall":
 
@@ -123,10 +105,6 @@ def analyze_weather(state: str):
             "for crop growth."
         )
 
-
-    # ==========================================
-    # RESPONSE
-    # ==========================================
 
     return {
 

@@ -5,21 +5,12 @@ from app.services.farmer_service import get_farmer_profile
 
 def get_farmer_crop_recommendations(user_id):
 
-    # ==========================================
-    # GET FARMER PROFILE
-    # ==========================================
-
     farmer = get_farmer_profile(user_id)
 
     if farmer is None:
         return {
             "error": "Farmer profile not found."
         }
-
-
-    # ==========================================
-    # GET PROFILE SECTIONS
-    # ==========================================
 
     soil = farmer.get("soil", {})
     farm = farmer.get("farm", {})
@@ -35,10 +26,6 @@ def get_farmer_crop_recommendations(user_id):
 
     profile_rainfall = water.get("annual_rainfall")
 
-
-    # ==========================================
-    # REQUIRED SOIL DATA
-    # ==========================================
 
     if (
         N is None
@@ -56,10 +43,6 @@ def get_farmer_crop_recommendations(user_id):
         }
 
 
-    # ==========================================
-    # STATE REQUIRED FOR WEATHER
-    # ==========================================
-
     if not state:
 
         return {
@@ -67,10 +50,6 @@ def get_farmer_crop_recommendations(user_id):
             "message": "Please provide your state."
         }
 
-
-    # ==========================================
-    # GET WEATHER
-    # ==========================================
 
     weather = analyze_weather(state)
 
@@ -86,11 +65,6 @@ def get_farmer_crop_recommendations(user_id):
         "average_rainfall"
     )
 
-
-    # ==========================================
-    # RAINFALL
-    # ==========================================
-
     rainfall = (
         profile_rainfall
         if profile_rainfall is not None
@@ -98,9 +72,6 @@ def get_farmer_crop_recommendations(user_id):
     )
 
 
-    # ==========================================
-    # CHECK WEATHER
-    # ==========================================
 
     if (
         temperature is None
@@ -116,10 +87,6 @@ def get_farmer_crop_recommendations(user_id):
             )
         }
 
-
-    # ==========================================
-    # MODEL INPUT
-    # ==========================================
 
     recommendation_data = {
 
@@ -145,10 +112,6 @@ def get_farmer_crop_recommendations(user_id):
         recommendation_data
     )
 
-
-    # ==========================================
-    # PREDICT
-    # ==========================================
 
     recommendations = recommend_crop(
         recommendation_data

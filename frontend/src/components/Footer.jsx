@@ -12,11 +12,7 @@ export default function Footer() {
   return (
     <footer className="mt-20 bg-slate-900 text-gray-300">
 
-      {/* Main Footer */}
-
       <div className="max-w-7xl mx-auto px-8 py-16 grid lg:grid-cols-4 md:grid-cols-2 gap-10">
-
-        {/* Brand */}
 
         <div>
 
@@ -51,7 +47,6 @@ export default function Footer() {
 
         </div>
 
-        {/* Quick Links */}
 
         <div>
 
@@ -101,9 +96,6 @@ export default function Footer() {
 
 </div>
 
-        
-
-        {/* Contact */}
 
         <div>
 
@@ -151,7 +143,6 @@ export default function Footer() {
 
       </div>
 
-      {/* Bottom Footer */}
 
       <div className="border-t border-slate-700">
 

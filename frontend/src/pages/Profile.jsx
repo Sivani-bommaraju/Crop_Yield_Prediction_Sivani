@@ -173,43 +173,6 @@ useEffect(() => {
     return Math.round((filled / total) * 100);
   };
 
-//   const handleSave = async () => {
-
-//     try {
-
-//         const payload = {
-
-//             state: form.state,
-//             district: form.district,
-//             village: form.village,
-
-//             land_size: Number(form.land_size),
-
-//             soil_type: form.soil_type,
-
-//             irrigation: form.irrigation,
-
-//             preferred_crops: [
-//                 form.primary_crop,
-//                 form.secondary_crop,
-//             ].filter(Boolean),
-
-//         };
-
-//         await saveFarmerProfile(payload);
-
-//         alert("Profile Saved Successfully!");
-
-//     } catch (err) {
-
-//         console.error(err);
-
-//         alert("Unable to save profile");
-
-//     }
-
-// };
-
 const toNumberOrNull = (value) =>
   value === "" || value === null
     ? null

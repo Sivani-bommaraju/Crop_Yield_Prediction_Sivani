@@ -32,9 +32,14 @@ export default function YieldPrediction() {
     const user =
         JSON.parse(localStorage.getItem("user")) || {};
 
+    // ==========================================
+    // STATE
+    // ==========================================
+
     const [prediction, setPrediction] = useState(null);
 
-    const [cropRecommendations, setCropRecommendations] = useState([]);
+    const [cropRecommendations, setCropRecommendations] =
+        useState([]);
 
     const [recommendationLoading, setRecommendationLoading] =
         useState(false);
@@ -47,6 +52,10 @@ export default function YieldPrediction() {
 
     const [predictionLoading, setPredictionLoading] =
         useState(false);
+
+    // Active section
+    const [activeSection, setActiveSection] =
+        useState("yield");
 
 
     // ==========================================
@@ -79,6 +88,98 @@ export default function YieldPrediction() {
 
 
     // ==========================================
+    // LOAD SECTION FROM URL HASH
+    // ==========================================
+
+    useEffect(() => {
+
+        const updateFromHash = () => {
+
+            const hash =
+                window.location.hash.replace("#", "");
+
+            const validSections = [
+                "yield",
+                "weather",
+                "soil",
+                "crop",
+            ];
+
+            if (validSections.includes(hash)) {
+                setActiveSection(hash);
+
+                setTimeout(() => {
+
+                    const element =
+                        document.getElementById(
+                            `section-${hash}`
+                        );
+
+                    if (element) {
+                        element.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    }
+
+                }, 100);
+            }
+
+        };
+
+        updateFromHash();
+
+        window.addEventListener(
+            "hashchange",
+            updateFromHash
+        );
+
+        return () => {
+            window.removeEventListener(
+                "hashchange",
+                updateFromHash
+            );
+        };
+
+    }, []);
+
+
+    // ==========================================
+    // CHANGE SECTION
+    // ==========================================
+
+    const changeSection = (section) => {
+
+        setActiveSection(section);
+
+        window.history.replaceState(
+            null,
+            "",
+            `/prediction#${section}`
+        );
+
+        setTimeout(() => {
+
+            const element =
+                document.getElementById(
+                    `section-${section}`
+                );
+
+            if (element) {
+
+                element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+
+            }
+
+        }, 50);
+
+    };
+
+
+    // ==========================================
     // LOAD FARMER PROFILE
     // ==========================================
 
@@ -88,9 +189,13 @@ export default function YieldPrediction() {
 
             try {
 
-                const profile = await getFarmerProfile();
+                const profile =
+                    await getFarmerProfile();
 
-                console.log("Farmer profile:", profile);
+                console.log(
+                    "Farmer profile:",
+                    profile
+                );
 
                 if (!profile) {
                     return;
@@ -151,7 +256,7 @@ export default function YieldPrediction() {
 
 
     // ==========================================
-    // HANDLE INPUT CHANGE
+    // HANDLE INPUT
     // ==========================================
 
     const handleChange = (e) => {
@@ -167,7 +272,7 @@ export default function YieldPrediction() {
 
 
     // ==========================================
-    // GET CROP RECOMMENDATIONS
+    // CROP RECOMMENDATIONS
     // ==========================================
 
     const getCropRecommendations = async () => {
@@ -178,7 +283,8 @@ export default function YieldPrediction() {
 
         try {
 
-            const token = localStorage.getItem("token");
+            const token =
+                localStorage.getItem("token");
 
             const response = await fetch(
                 "http://localhost:8000/farmer/recommendations",
@@ -186,12 +292,14 @@ export default function YieldPrediction() {
                     method: "GET",
 
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization:
+                            `Bearer ${token}`,
                     },
                 }
             );
 
-            const data = await response.json();
+            const data =
+                await response.json();
 
             if (!response.ok) {
 
@@ -263,49 +371,67 @@ export default function YieldPrediction() {
 
         try {
 
-            const result = await predictYield({
+            const result =
+                await predictYield({
 
-                ...formData,
+                    ...formData,
 
-                Crop_Year:
-                    Number(formData.Crop_Year),
+                    Crop_Year:
+                        Number(
+                            formData.Crop_Year
+                        ),
 
-                Annual_Rainfall:
-                    Number(formData.Annual_Rainfall),
+                    Annual_Rainfall:
+                        Number(
+                            formData.Annual_Rainfall
+                        ),
 
-                Fertilizer:
-                    Number(formData.Fertilizer),
+                    Fertilizer:
+                        Number(
+                            formData.Fertilizer
+                        ),
 
-                Pesticide:
-                    Number(formData.Pesticide),
+                    Pesticide:
+                        Number(
+                            formData.Pesticide
+                        ),
 
-                Avg_Temperature:
-                    Number(formData.Avg_Temperature),
+                    Avg_Temperature:
+                        Number(
+                            formData.Avg_Temperature
+                        ),
 
-                Max_Temperature:
-                    Number(formData.Max_Temperature),
+                    Max_Temperature:
+                        Number(
+                            formData.Max_Temperature
+                        ),
 
-                Min_Temperature:
-                    Number(formData.Min_Temperature),
+                    Min_Temperature:
+                        Number(
+                            formData.Min_Temperature
+                        ),
 
-                N:
-                    Number(formData.N),
+                    N:
+                        Number(formData.N),
 
-                P:
-                    Number(formData.P),
+                    P:
+                        Number(formData.P),
 
-                K:
-                    Number(formData.K),
+                    K:
+                        Number(formData.K),
 
-                pH:
-                    Number(formData.pH),
+                    pH:
+                        Number(formData.pH),
 
-            });
+                });
 
             setPrediction(result);
 
             // Generate crop recommendations
             await getCropRecommendations();
+
+            // Show yield section first
+            changeSection("yield");
 
         }
 
@@ -339,9 +465,48 @@ export default function YieldPrediction() {
     };
 
 
+    // ==========================================
+    // SECTION NAVIGATION
+    // ==========================================
+
+    const sections = [
+
+        {
+            id: "yield",
+            label: "Yield Prediction",
+            icon: <BarChart3 size={17} />,
+        },
+
+        {
+            id: "weather",
+            label: "Weather Analysis",
+            icon: <CloudSun size={17} />,
+        },
+
+        {
+            id: "soil",
+            label: "Soil Analysis",
+            icon: <FlaskConical size={17} />,
+        },
+
+        {
+            id: "crop",
+            label: "Crop Recommendation",
+            icon: <Leaf size={17} />,
+        },
+
+    ];
+
+
     return (
 
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-lime-100">
+        <div className="
+            min-h-screen
+            bg-gradient-to-br
+            from-slate-50
+            via-green-50
+            to-lime-100
+        ">
 
             <Navbar
                 user={user}
@@ -353,9 +518,24 @@ export default function YieldPrediction() {
                 HERO
             ======================================== */}
 
-            <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-10">
+            <section className="
+                max-w-7xl
+                mx-auto
+                px-6
+                lg:px-8
+                mt-10
+            ">
 
-                <div className="rounded-3xl bg-gradient-to-r from-green-700 via-emerald-600 to-lime-600 shadow-2xl p-10 lg:p-12">
+                <div className="
+                    rounded-3xl
+                    bg-gradient-to-r
+                    from-green-700
+                    via-emerald-600
+                    to-lime-600
+                    shadow-2xl
+                    p-10
+                    lg:p-12
+                ">
 
                     <div className="flex items-center gap-3">
 
@@ -364,7 +544,14 @@ export default function YieldPrediction() {
                             size={24}
                         />
 
-                        <span className="bg-white/20 px-4 py-2 rounded-full text-white text-sm">
+                        <span className="
+                            bg-white/20
+                            px-4
+                            py-2
+                            rounded-full
+                            text-white
+                            text-sm
+                        ">
 
                             AI Powered Prediction
 
@@ -372,16 +559,27 @@ export default function YieldPrediction() {
 
                     </div>
 
-                    <h1 className="text-4xl lg:text-5xl font-bold text-white mt-8">
+                    <h1 className="
+                        text-4xl
+                        lg:text-5xl
+                        font-bold
+                        text-white
+                        mt-8
+                    ">
 
                         Crop Yield Prediction
 
                     </h1>
 
-                    <p className="text-green-100 mt-5 text-lg max-w-3xl">
+                    <p className="
+                        text-green-100
+                        mt-5
+                        text-lg
+                        max-w-3xl
+                    ">
 
-                        Predict crop yield using Machine Learning based on
-                        your farm, soil and weather conditions.
+                        Predict crop yield using Machine Learning
+                        based on your farm, soil and weather conditions.
 
                     </p>
 
@@ -394,11 +592,26 @@ export default function YieldPrediction() {
                 PROFILE STATUS
             ======================================== */}
 
-            <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-8">
+            <section className="
+                max-w-7xl
+                mx-auto
+                px-6
+                lg:px-8
+                mt-8
+            ">
 
                 {loadingProfile ? (
 
-                    <div className="bg-white rounded-2xl shadow p-5 text-gray-600 flex items-center gap-3">
+                    <div className="
+                        bg-white
+                        rounded-2xl
+                        shadow
+                        p-5
+                        text-gray-600
+                        flex
+                        items-center
+                        gap-3
+                    ">
 
                         <Loader2
                             className="animate-spin"
@@ -411,9 +624,19 @@ export default function YieldPrediction() {
 
                 ) : (
 
-                    <div className="bg-green-50 border border-green-200 rounded-2xl p-5">
+                    <div className="
+                        bg-green-50
+                        border
+                        border-green-200
+                        rounded-2xl
+                        p-5
+                    ">
 
-                        <div className="flex items-center gap-3">
+                        <div className="
+                            flex
+                            items-center
+                            gap-3
+                        ">
 
                             <CheckCircle2
                                 className="text-green-700"
@@ -422,16 +645,23 @@ export default function YieldPrediction() {
 
                             <div>
 
-                                <h3 className="font-bold text-green-800">
+                                <h3 className="
+                                    font-bold
+                                    text-green-800
+                                ">
 
                                     Farmer Profile Connected
 
                                 </h3>
 
-                                <p className="text-green-700 text-sm">
+                                <p className="
+                                    text-green-700
+                                    text-sm
+                                ">
 
-                                    Soil, crop and farm information has been
-                                    automatically loaded from your profile.
+                                    Soil, crop and farm information
+                                    has been automatically loaded
+                                    from your profile.
 
                                 </p>
 
@@ -448,16 +678,40 @@ export default function YieldPrediction() {
 
             {/* ========================================
                 PREDICTION FORM
-                FULL WIDTH
             ======================================== */}
 
-            <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-10">
+            <section className="
+                max-w-7xl
+                mx-auto
+                px-6
+                lg:px-8
+                mt-10
+            ">
 
-                <div className="bg-white rounded-3xl shadow-xl p-8 lg:p-10">
+                <div className="
+                    bg-white
+                    rounded-3xl
+                    shadow-xl
+                    p-8
+                    lg:p-10
+                ">
 
-                    <div className="flex items-center gap-3 mb-8">
+                    <div className="
+                        flex
+                        items-center
+                        gap-3
+                        mb-8
+                    ">
 
-                        <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
+                        <div className="
+                            w-12
+                            h-12
+                            rounded-2xl
+                            bg-green-50
+                            flex
+                            items-center
+                            justify-center
+                        ">
 
                             <BrainCircuit
                                 className="text-green-700"
@@ -468,16 +722,24 @@ export default function YieldPrediction() {
 
                         <div>
 
-                            <h2 className="text-2xl font-bold text-gray-900">
+                            <h2 className="
+                                text-2xl
+                                font-bold
+                                text-gray-900
+                            ">
 
                                 Prediction Details
 
                             </h2>
 
-                            <p className="text-gray-500 text-sm mt-1">
+                            <p className="
+                                text-gray-500
+                                text-sm
+                                mt-1
+                            ">
 
-                                Values from your farmer profile are
-                                automatically populated.
+                                Values from your farmer profile
+                                are automatically populated.
 
                             </p>
 
@@ -488,16 +750,28 @@ export default function YieldPrediction() {
 
                     <form
                         onSubmit={handleSubmit}
-                        className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                        className="
+                            grid
+                            sm:grid-cols-2
+                            lg:grid-cols-3
+                            gap-6
+                        "
                     >
 
                         {Object.keys(formData).map((key) => (
 
                             <div key={key}>
 
-                                <label className="text-sm font-semibold text-gray-600">
+                                <label className="
+                                    text-sm
+                                    font-semibold
+                                    text-gray-600
+                                ">
 
-                                    {key.replaceAll("_", " ")}
+                                    {key.replaceAll(
+                                        "_",
+                                        " "
+                                    )}
 
                                 </label>
 
@@ -505,7 +779,19 @@ export default function YieldPrediction() {
                                     name={key}
                                     value={formData[key]}
                                     onChange={handleChange}
-                                    className="w-full mt-2 rounded-xl border border-gray-300 p-3.5 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition"
+                                    className="
+                                        w-full
+                                        mt-2
+                                        rounded-xl
+                                        border
+                                        border-gray-300
+                                        p-3.5
+                                        focus:ring-2
+                                        focus:ring-green-500
+                                        focus:border-green-500
+                                        outline-none
+                                        transition
+                                    "
                                 />
 
                             </div>
@@ -513,7 +799,10 @@ export default function YieldPrediction() {
                         ))}
 
 
-                        <div className="sm:col-span-2 lg:col-span-3">
+                        <div className="
+                            sm:col-span-2
+                            lg:col-span-3
+                        ">
 
                             <button
                                 type="submit"
@@ -521,12 +810,29 @@ export default function YieldPrediction() {
                                     loadingProfile ||
                                     predictionLoading
                                 }
-                                className="w-full mt-3 bg-green-700 hover:bg-green-800 disabled:bg-gray-400 text-white font-semibold py-4 rounded-xl transition shadow-sm"
+                                className="
+                                    w-full
+                                    mt-3
+                                    bg-green-700
+                                    hover:bg-green-800
+                                    disabled:bg-gray-400
+                                    text-white
+                                    font-semibold
+                                    py-4
+                                    rounded-xl
+                                    transition
+                                    shadow-sm
+                                "
                             >
 
                                 {predictionLoading ? (
 
-                                    <span className="flex items-center justify-center gap-2">
+                                    <span className="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        gap-2
+                                    ">
 
                                         <Loader2
                                             size={20}
@@ -559,105 +865,240 @@ export default function YieldPrediction() {
 
 
             {/* ========================================
-                PREDICTION REPORT
-                FULL WIDTH BELOW FORM
+                SECTION NAVIGATION BAR
             ======================================== */}
 
-            <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-10">
+            <section className="
+                max-w-7xl
+                mx-auto
+                px-6
+                lg:px-8
+                mt-8
+            ">
 
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+                <div className="
+                    bg-white
+                    rounded-2xl
+                    shadow-md
+                    border
+                    border-gray-100
+                    p-2
+                    grid
+                    grid-cols-2
+                    md:grid-cols-4
+                    gap-2
+                ">
 
-                    {/* REPORT HEADER */}
+                    {sections.map((section) => (
 
-                    <div className="px-8 lg:px-10 py-7 border-b border-gray-100">
+                        <button
+                            key={section.id}
+                            onClick={() =>
+                                changeSection(
+                                    section.id
+                                )
+                            }
+                            className={`
+                                flex
+                                items-center
+                                justify-center
+                                gap-2
+                                px-4
+                                py-3.5
+                                rounded-xl
+                                text-sm
+                                font-semibold
+                                transition-all
+                                duration-200
+                                ${
+                                    activeSection ===
+                                    section.id
 
-                        <div className="flex items-center gap-4">
+                                        ? "bg-green-700 text-white shadow-md"
 
-                            <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
+                                        : "text-gray-600 hover:bg-green-50 hover:text-green-700"
+                                }
+                            `}
+                        >
 
-                                <BarChart3
-                                    className="text-green-700"
-                                    size={26}
-                                />
+                            {section.icon}
+
+                            {section.label}
+
+                        </button>
+
+                    ))}
+
+                </div>
+
+            </section>
+
+
+            {/* ========================================
+                SELECTED SECTION
+            ======================================== */}
+
+            <section
+                id={`section-${activeSection}`}
+                className="
+                    max-w-7xl
+                    mx-auto
+                    px-6
+                    lg:px-8
+                    mt-8
+                    mb-20
+                "
+            >
+
+                {/* ====================================
+                    YIELD PREDICTION
+                ==================================== */}
+
+                {activeSection === "yield" && (
+
+                    <div className="
+                        bg-white
+                        rounded-3xl
+                        shadow-xl
+                        overflow-hidden
+                    ">
+
+                        <div className="
+                            px-8
+                            lg:px-10
+                            py-7
+                            border-b
+                            border-gray-100
+                        ">
+
+                            <div className="
+                                flex
+                                items-center
+                                gap-4
+                            ">
+
+                                <div className="
+                                    w-12
+                                    h-12
+                                    rounded-2xl
+                                    bg-green-50
+                                    flex
+                                    items-center
+                                    justify-center
+                                ">
+
+                                    <BarChart3
+                                        className="text-green-700"
+                                        size={26}
+                                    />
+
+                                </div>
+
+                                <div>
+
+                                    <h2 className="
+                                        text-2xl
+                                        font-bold
+                                        text-gray-900
+                                    ">
+
+                                        Yield Prediction
+
+                                    </h2>
+
+                                    <p className="
+                                        text-gray-500
+                                        text-sm
+                                        mt-1
+                                    ">
+
+                                        AI-generated crop yield
+                                        prediction.
+
+                                    </p>
+
+                                </div>
 
                             </div>
 
-                            <div>
+                        </div>
 
-                                <h2 className="text-2xl font-bold text-gray-900">
 
-                                    Prediction Report
+                        {!prediction ? (
 
-                                </h2>
+                            <div className="
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                text-center
+                                py-16
+                                px-6
+                            ">
 
-                                <p className="text-gray-500 text-sm mt-1">
+                                <BarChart3
+                                    size={42}
+                                    className="
+                                        text-green-400
+                                        mb-5
+                                    "
+                                />
 
-                                    AI-generated analysis of your crop,
-                                    weather and soil conditions.
+                                <h3 className="
+                                    font-bold
+                                    text-lg
+                                    text-gray-800
+                                ">
+
+                                    No yield prediction yet
+
+                                </h3>
+
+                                <p className="
+                                    text-gray-500
+                                    text-sm
+                                    mt-2
+                                ">
+
+                                    Submit the farm details above
+                                    to generate your yield prediction.
 
                                 </p>
 
                             </div>
 
-                        </div>
+                        ) : (
 
-                    </div>
+                            <div className="p-8 lg:p-10">
 
+                                <div className="
+                                    max-w-xl
+                                    mx-auto
+                                    rounded-2xl
+                                    bg-green-50
+                                    border
+                                    border-green-100
+                                    p-8
+                                ">
 
-                    {/* REPORT CONTENT */}
-
-                    {!prediction ? (
-
-                        <div className="flex flex-col items-center justify-center text-center py-16 px-6">
-
-                            <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mb-5">
-
-                                <BarChart3
-                                    size={30}
-                                    className="text-green-600"
-                                />
-
-                            </div>
-
-                            <h3 className="font-bold text-lg text-gray-800">
-
-                                Your prediction report will appear here
-
-                            </h3>
-
-                            <p className="text-gray-500 text-sm max-w-lg mt-2">
-
-                                Fill in the farm details above and click
-                                <span className="font-semibold">
-                                    {" "}Predict Yield
-                                </span>
-                                {" "}to generate your AI-powered report.
-
-                            </p>
-
-                        </div>
-
-                    ) : (
-
-                        <div className="p-8 lg:p-10">
-
-                            <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-
-
-                                {/* =================================
-                                    YIELD
-                                ================================= */}
-
-                                <div className="rounded-2xl bg-green-50 border border-green-100 p-6">
-
-                                    <div className="flex items-center gap-2">
+                                    <div className="
+                                        flex
+                                        items-center
+                                        gap-2
+                                    ">
 
                                         <Sprout
-                                            size={21}
-                                            className="text-green-700"
+                                            size={22}
+                                            className="
+                                                text-green-700
+                                            "
                                         />
 
-                                        <h3 className="font-bold text-lg text-green-700">
+                                        <h3 className="
+                                            font-bold
+                                            text-lg
+                                            text-green-700
+                                        ">
 
                                             Predicted Yield
 
@@ -667,13 +1108,22 @@ export default function YieldPrediction() {
 
                                     <div className="mt-5">
 
-                                        <h1 className="text-4xl lg:text-5xl font-bold text-gray-900">
+                                        <h1 className="
+                                            text-5xl
+                                            font-bold
+                                            text-gray-900
+                                        ">
 
-                                            {prediction.predicted_yield.toFixed(3)}
+                                            {Number(
+                                                prediction.predicted_yield
+                                            ).toFixed(3)}
 
                                         </h1>
 
-                                        <p className="text-gray-600 mt-2">
+                                        <p className="
+                                            text-gray-600
+                                            mt-2
+                                        ">
 
                                             tonnes / hectare
 
@@ -683,414 +1133,316 @@ export default function YieldPrediction() {
 
                                 </div>
 
-
-                                {/* =================================
-                                    WEATHER
-                                ================================= */}
-
-                                <div className="rounded-2xl bg-blue-50 border border-blue-100 p-6">
-
-                                    <div className="flex items-center gap-2 mb-5">
-
-                                        <CloudSun
-                                            size={21}
-                                            className="text-blue-700"
-                                        />
-
-                                        <h3 className="font-bold text-lg text-gray-900">
-
-                                            Weather Analysis
-
-                                        </h3>
-
-                                    </div>
-
-                                    <div className="space-y-3 text-sm text-gray-700">
-
-                                        <p>
-                                            <strong>
-                                                Temperature:
-                                            </strong>{" "}
-
-                                            {prediction.weather.average_temperature}
-                                            °C
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Rainfall:
-                                            </strong>{" "}
-
-                                            {prediction.weather.average_rainfall}
-                                            mm
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Humidity:
-                                            </strong>{" "}
-
-                                            {prediction.weather.average_humidity}
-                                            %
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Rainfall:
-                                            </strong>{" "}
-
-                                            {prediction.weather.rainfall_status}
-
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Temperature:
-                                            </strong>{" "}
-
-                                            {prediction.weather.temperature_status}
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-
-                                {/* =================================
-                                    SOIL
-                                ================================= */}
-
-                                <div className="rounded-2xl bg-yellow-50 border border-yellow-100 p-6">
-
-                                    <div className="flex items-center gap-2 mb-5">
-
-                                        <FlaskConical
-                                            size={21}
-                                            className="text-yellow-700"
-                                        />
-
-                                        <h3 className="font-bold text-lg text-gray-900">
-
-                                            Soil Analysis
-
-                                        </h3>
-
-                                    </div>
-
-                                    <div className="space-y-3 text-sm text-gray-700">
-
-                                        <p>
-                                            <strong>
-                                                Nitrogen:
-                                            </strong>{" "}
-
-                                            {prediction.soil.nitrogen}
-
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Phosphorus:
-                                            </strong>{" "}
-
-                                            {prediction.soil.phosphorus}
-
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Potassium:
-                                            </strong>{" "}
-
-                                            {prediction.soil.potassium}
-
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                pH:
-                                            </strong>{" "}
-
-                                            {prediction.soil.ph}
-
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Soil Score:
-                                            </strong>{" "}
-
-                                            {prediction.soil.soil_score}/100
-
-                                        </p>
-
-                                        <p>
-                                            <strong>
-                                                Quality:
-                                            </strong>{" "}
-
-                                            {prediction.soil.quality}
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
-
-                                {/* =================================
-                                    AI RECOMMENDATION
-                                ================================= */}
-
-                                <div className="rounded-2xl bg-lime-50 border border-lime-100 p-6">
-
-                                    <div className="flex items-center gap-2 mb-5">
-
-                                        <Lightbulb
-                                            size={21}
-                                            className="text-green-700"
-                                        />
-
-                                        <h3 className="font-bold text-lg text-green-700">
-
-                                            AI Recommendation
-
-                                        </h3>
-
-                                    </div>
-
-                                    <div className="space-y-4 text-sm text-gray-700">
-
-                                        <p>
-
-                                            {prediction.weather.impact}
-
-                                        </p>
-
-                                        <p>
-
-                                            {prediction.soil.recommendation}
-
-                                        </p>
-
-                                    </div>
-
-                                </div>
-
                             </div>
 
-                        </div>
-
-                    )}
-
-                </div>
-
-            </section>
-
-
-            {/* ========================================
-                RECOMMENDED CROPS
-                FULL WIDTH BELOW PREDICTION REPORT
-            ======================================== */}
-
-            <section className="max-w-7xl mx-auto px-6 lg:px-8 mt-10 mb-20">
-
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-
-
-                    {/* HEADER */}
-
-                    <div className="px-8 lg:px-10 py-7 border-b border-gray-100">
-
-                        <div className="flex items-center gap-4">
-
-                            <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center">
-
-                                <Leaf
-                                    className="text-green-700"
-                                    size={25}
-                                />
-
-                            </div>
-
-                            <div>
-
-                                <h2 className="text-2xl font-bold text-gray-900">
-
-                                    Recommended Crops
-
-                                </h2>
-
-                                <p className="text-gray-500 text-sm mt-1">
-
-                                    AI-powered crop recommendations based on
-                                    your soil and rainfall conditions.
-
-                                </p>
-
-                            </div>
-
-                        </div>
+                        )}
 
                     </div>
 
+                )}
 
-                    {/* CONTENT */}
 
-                    <div className="p-8 lg:p-10">
+                {/* ====================================
+                    WEATHER
+                ==================================== */}
 
-                        {recommendationLoading ? (
+                {activeSection === "weather" && (
 
-                            <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                    <div
+                        id="section-weather"
+                        className="
+                            bg-white
+                            rounded-3xl
+                            shadow-xl
+                            overflow-hidden
+                        "
+                    >
 
-                                <Loader2
-                                    className="animate-spin text-green-700 mb-4"
-                                    size={30}
-                                />
+                        <div className="
+                            px-8
+                            lg:px-10
+                            py-7
+                            border-b
+                            border-gray-100
+                        ">
 
-                                <p className="font-medium">
+                            <div className="
+                                flex
+                                items-center
+                                gap-4
+                            ">
 
-                                    Generating crop recommendations...
+                                <div className="
+                                    w-12
+                                    h-12
+                                    rounded-2xl
+                                    bg-blue-50
+                                    flex
+                                    items-center
+                                    justify-center
+                                ">
 
-                                </p>
+                                    <CloudSun
+                                        className="text-blue-600"
+                                        size={26}
+                                    />
 
-                                <p className="text-sm mt-1">
+                                </div>
 
-                                    Analysing your soil and farm conditions.
+                                <div>
 
-                                </p>
+                                    <h2 className="
+                                        text-2xl
+                                        font-bold
+                                        text-gray-900
+                                    ">
+
+                                        Weather Analysis
+
+                                    </h2>
+
+                                    <p className="
+                                        text-gray-500
+                                        text-sm
+                                        mt-1
+                                    ">
+
+                                        Analyse weather conditions
+                                        affecting crop growth.
+
+                                    </p>
+
+                                </div>
 
                             </div>
 
-                        ) : cropRecommendations.length > 0 ? (
-
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-                                {cropRecommendations.map(
-                                    (item, index) => (
-
-                                        <div
-                                            key={index}
-                                            className="rounded-2xl border border-green-100 bg-green-50/40 p-5 hover:shadow-md hover:border-green-200 transition"
-                                        >
-
-                                            <div className="flex items-center justify-between">
-
-                                                <div className="flex items-center gap-3">
-
-                                                    <div className="w-11 h-11 rounded-xl bg-white flex items-center justify-center shadow-sm">
-
-                                                        <Sprout
-                                                            size={22}
-                                                            className="text-green-700"
-                                                        />
-
-                                                    </div>
-
-                                                    <div>
-
-                                                        <p className="font-bold text-gray-900 capitalize">
-
-                                                            {item.crop}
-
-                                                        </p>
-
-                                                        <p className="text-xs text-gray-500 mt-0.5">
-
-                                                            AI recommended crop
-
-                                                        </p>
-
-                                                    </div>
-
-                                                </div>
+                        </div>
 
 
-                                                <div className="text-right">
+                        {!prediction ? (
 
-                                                    <p className="text-xl font-bold text-green-700">
+                            <div className="
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                text-center
+                                py-16
+                            ">
 
-                                                        {item.confidence}%
+                                <CloudSun
+                                    size={42}
+                                    className="
+                                        text-blue-300
+                                        mb-5
+                                    "
+                                />
 
-                                                    </p>
+                                <p className="
+                                    text-gray-500
+                                    text-sm
+                                ">
 
-                                                    <p className="text-xs text-gray-500">
+                                    Weather analysis will appear
+                                    after prediction.
 
-                                                        confidence
-
-                                                    </p>
-
-                                                </div>
-
-                                            </div>
-
-
-                                            {/* Confidence Bar */}
-
-                                            <div className="mt-5">
-
-                                                <div className="flex justify-between text-xs text-gray-500 mb-2">
-
-                                                    <span>
-                                                        Recommendation strength
-                                                    </span>
-
-                                                    <span>
-                                                        {item.confidence}%
-                                                    </span>
-
-                                                </div>
-
-                                                <div className="w-full h-2 bg-white rounded-full overflow-hidden">
-
-                                                    <div
-                                                        className="h-full bg-green-600 rounded-full transition-all duration-700"
-                                                        style={{
-                                                            width: `${Math.min(
-                                                                Number(item.confidence),
-                                                                100
-                                                            )}%`,
-                                                        }}
-                                                    />
-
-                                                </div>
-
-                                            </div>
-
-                                        </div>
-
-                                    )
-                                )}
+                                </p>
 
                             </div>
 
                         ) : (
 
-                            <div className="flex flex-col items-center justify-center text-center py-12">
+                            <div className="p-8 lg:p-10">
 
-                                <div className="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center mb-5">
+                                <div className="
+                                    max-w-3xl
+                                    mx-auto
+                                    rounded-2xl
+                                    bg-blue-50
+                                    border
+                                    border-blue-100
+                                    p-8
+                                ">
 
-                                    <Leaf
-                                        size={30}
-                                        className="text-green-600"
-                                    />
+                                    <div className="
+                                        grid
+                                        sm:grid-cols-2
+                                        gap-5
+                                    ">
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Average Temperature
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                text-gray-900
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.weather
+                                                        .average_temperature
+                                                }°C
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Average Rainfall
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                text-gray-900
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.weather
+                                                        .average_rainfall
+                                                } mm
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Average Humidity
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                text-gray-900
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.weather
+                                                        .average_humidity
+                                                }%
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Rainfall Status
+
+                                            </p>
+
+                                            <p className="
+                                                font-semibold
+                                                text-blue-700
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.weather
+                                                        .rainfall_status
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Temperature Status
+
+                                            </p>
+
+                                            <p className="
+                                                font-semibold
+                                                text-blue-700
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.weather
+                                                        .temperature_status
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div className="
+                                            sm:col-span-2
+                                            pt-4
+                                            border-t
+                                            border-blue-100
+                                        ">
+
+                                            <p className="
+                                                text-sm
+                                                font-semibold
+                                                text-gray-700
+                                            ">
+
+                                                Weather Impact
+
+                                            </p>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-600
+                                                mt-2
+                                            ">
+
+                                                {
+                                                    prediction.weather
+                                                        .impact
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
 
                                 </div>
-
-                                <h3 className="font-bold text-lg text-gray-800">
-
-                                    No recommendations yet
-
-                                </h3>
-
-                                <p className="text-gray-500 text-sm max-w-lg mt-2">
-
-                                    {recommendationMessage ||
-                                        "Complete the required soil and rainfall information in your farmer profile to receive crop recommendations."
-                                    }
-
-                                </p>
 
                             </div>
 
@@ -1098,7 +1450,711 @@ export default function YieldPrediction() {
 
                     </div>
 
-                </div>
+                )}
+
+
+                {/* ====================================
+                    SOIL
+                ==================================== */}
+
+                {activeSection === "soil" && (
+
+                    <div
+                        id="section-soil"
+                        className="
+                            bg-white
+                            rounded-3xl
+                            shadow-xl
+                            overflow-hidden
+                        "
+                    >
+
+                        <div className="
+                            px-8
+                            lg:px-10
+                            py-7
+                            border-b
+                            border-gray-100
+                        ">
+
+                            <div className="
+                                flex
+                                items-center
+                                gap-4
+                            ">
+
+                                <div className="
+                                    w-12
+                                    h-12
+                                    rounded-2xl
+                                    bg-yellow-50
+                                    flex
+                                    items-center
+                                    justify-center
+                                ">
+
+                                    <FlaskConical
+                                        className="
+                                            text-yellow-600
+                                        "
+                                        size={26}
+                                    />
+
+                                </div>
+
+                                <div>
+
+                                    <h2 className="
+                                        text-2xl
+                                        font-bold
+                                        text-gray-900
+                                    ">
+
+                                        Soil Analysis
+
+                                    </h2>
+
+                                    <p className="
+                                        text-gray-500
+                                        text-sm
+                                        mt-1
+                                    ">
+
+                                        Analyse soil nutrients,
+                                        pH and soil quality.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {!prediction ? (
+
+                            <div className="
+                                flex
+                                flex-col
+                                items-center
+                                justify-center
+                                text-center
+                                py-16
+                            ">
+
+                                <FlaskConical
+                                    size={42}
+                                    className="
+                                        text-yellow-400
+                                        mb-5
+                                    "
+                                />
+
+                                <p className="
+                                    text-gray-500
+                                    text-sm
+                                ">
+
+                                    Soil analysis will appear
+                                    after prediction.
+
+                                </p>
+
+                            </div>
+
+                        ) : (
+
+                            <div className="p-8 lg:p-10">
+
+                                <div className="
+                                    max-w-3xl
+                                    mx-auto
+                                    rounded-2xl
+                                    bg-yellow-50
+                                    border
+                                    border-yellow-100
+                                    p-8
+                                ">
+
+                                    <div className="
+                                        grid
+                                        sm:grid-cols-2
+                                        gap-5
+                                    ">
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Nitrogen
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .nitrogen
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Phosphorus
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .phosphorus
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Potassium
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .potassium
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                pH
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .ph
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Soil Score
+
+                                            </p>
+
+                                            <p className="
+                                                text-xl
+                                                font-bold
+                                                text-yellow-700
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .soil_score
+                                                }/100
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-500
+                                            ">
+
+                                                Quality
+
+                                            </p>
+
+                                            <p className="
+                                                font-semibold
+                                                text-yellow-700
+                                                mt-1
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .quality
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <div className="
+                                            sm:col-span-2
+                                            pt-4
+                                            border-t
+                                            border-yellow-100
+                                        ">
+
+                                            <p className="
+                                                text-sm
+                                                font-semibold
+                                                text-gray-700
+                                            ">
+
+                                                Soil Recommendation
+
+                                            </p>
+
+                                            <p className="
+                                                text-sm
+                                                text-gray-600
+                                                mt-2
+                                            ">
+
+                                                {
+                                                    prediction.soil
+                                                        .recommendation
+                                                }
+
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        )}
+
+                    </div>
+
+                )}
+
+
+                {/* ====================================
+                    CROP RECOMMENDATION
+                ==================================== */}
+
+                {activeSection === "crop" && (
+
+                    <div
+                        id="section-crop"
+                        className="
+                            bg-white
+                            rounded-3xl
+                            shadow-xl
+                            overflow-hidden
+                        "
+                    >
+
+                        <div className="
+                            px-8
+                            lg:px-10
+                            py-7
+                            border-b
+                            border-gray-100
+                        ">
+
+                            <div className="
+                                flex
+                                items-center
+                                gap-4
+                            ">
+
+                                <div className="
+                                    w-12
+                                    h-12
+                                    rounded-2xl
+                                    bg-green-50
+                                    flex
+                                    items-center
+                                    justify-center
+                                ">
+
+                                    <Leaf
+                                        className="
+                                            text-green-700
+                                        "
+                                        size={25}
+                                    />
+
+                                </div>
+
+                                <div>
+
+                                    <h2 className="
+                                        text-2xl
+                                        font-bold
+                                        text-gray-900
+                                    ">
+
+                                        Recommended Crops
+
+                                    </h2>
+
+                                    <p className="
+                                        text-gray-500
+                                        text-sm
+                                        mt-1
+                                    ">
+
+                                        AI-powered crop recommendations
+                                        based on your soil and rainfall
+                                        conditions.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="p-8 lg:p-10">
+
+                            {recommendationLoading ? (
+
+                                <div className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    py-12
+                                    text-gray-500
+                                ">
+
+                                    <Loader2
+                                        className="
+                                            animate-spin
+                                            text-green-700
+                                            mb-4
+                                        "
+                                        size={30}
+                                    />
+
+                                    <p className="font-medium">
+
+                                        Generating crop
+                                        recommendations...
+
+                                    </p>
+
+                                    <p className="
+                                        text-sm
+                                        mt-1
+                                    ">
+
+                                        Analysing your soil
+                                        and farm conditions.
+
+                                    </p>
+
+                                </div>
+
+                            ) : cropRecommendations.length > 0 ? (
+
+                                <div className="
+                                    grid
+                                    md:grid-cols-2
+                                    lg:grid-cols-3
+                                    gap-5
+                                ">
+
+                                    {cropRecommendations.map(
+                                        (item, index) => (
+
+                                            <div
+                                                key={index}
+                                                className="
+                                                    group
+                                                    rounded-2xl
+                                                    border
+                                                    border-green-100
+                                                    bg-green-50/40
+                                                    p-5
+                                                    hover:shadow-md
+                                                    hover:border-green-200
+                                                    transition
+                                                "
+                                            >
+
+                                                <div className="
+                                                    flex
+                                                    items-center
+                                                    justify-between
+                                                ">
+
+                                                    <div className="
+                                                        flex
+                                                        items-center
+                                                        gap-3
+                                                    ">
+
+                                                        <div className="
+                                                            w-11
+                                                            h-11
+                                                            rounded-xl
+                                                            bg-white
+                                                            flex
+                                                            items-center
+                                                            justify-center
+                                                            shadow-sm
+                                                        ">
+
+                                                            <Sprout
+                                                                size={22}
+                                                                className="
+                                                                    text-green-700
+                                                                "
+                                                            />
+
+                                                        </div>
+
+                                                        <div>
+
+                                                            <p className="
+                                                                font-bold
+                                                                text-gray-900
+                                                                capitalize
+                                                            ">
+
+                                                                {
+                                                                    item.crop
+                                                                }
+
+                                                            </p>
+
+                                                            <p className="
+                                                                text-xs
+                                                                text-gray-500
+                                                                mt-0.5
+                                                            ">
+
+                                                                AI recommended
+                                                                crop
+
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div className="
+                                                        text-right
+                                                    ">
+
+                                                        <p className="
+                                                            text-xl
+                                                            font-bold
+                                                            text-green-700
+                                                        ">
+
+                                                            {
+                                                                item.confidence
+                                                            }%
+
+                                                        </p>
+
+                                                        <p className="
+                                                            text-xs
+                                                            text-gray-500
+                                                        ">
+
+                                                            confidence
+
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <div className="mt-5">
+
+                                                    <div className="
+                                                        flex
+                                                        justify-between
+                                                        text-xs
+                                                        text-gray-500
+                                                        mb-2
+                                                    ">
+
+                                                        <span>
+                                                            Recommendation
+                                                            strength
+                                                        </span>
+
+                                                        <span>
+                                                            {
+                                                                item.confidence
+                                                            }%
+                                                        </span>
+
+                                                    </div>
+
+                                                    <div className="
+                                                        w-full
+                                                        h-2
+                                                        bg-white
+                                                        rounded-full
+                                                        overflow-hidden
+                                                    ">
+
+                                                        <div
+                                                            className="
+                                                                h-full
+                                                                bg-green-600
+                                                                rounded-full
+                                                                transition-all
+                                                                duration-700
+                                                            "
+                                                            style={{
+                                                                width:
+                                                                    `${Math.min(
+                                                                        Number(
+                                                                            item.confidence
+                                                                        ),
+                                                                        100
+                                                                    )}%`,
+                                                            }}
+                                                        />
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        )
+                                    )}
+
+                                </div>
+
+                            ) : (
+
+                                <div className="
+                                    flex
+                                    flex-col
+                                    items-center
+                                    justify-center
+                                    text-center
+                                    py-12
+                                ">
+
+                                    <div className="
+                                        w-16
+                                        h-16
+                                        rounded-2xl
+                                        bg-green-50
+                                        flex
+                                        items-center
+                                        justify-center
+                                        mb-5
+                                    ">
+
+                                        <Leaf
+                                            size={30}
+                                            className="
+                                                text-green-600
+                                            "
+                                        />
+
+                                    </div>
+
+                                    <h3 className="
+                                        font-bold
+                                        text-lg
+                                        text-gray-800
+                                    ">
+
+                                        No recommendations yet
+
+                                    </h3>
+
+                                    <p className="
+                                        text-gray-500
+                                        text-sm
+                                        max-w-lg
+                                        mt-2
+                                    ">
+
+                                        {recommendationMessage ||
+                                            "Submit the prediction form to generate AI-powered crop recommendations."
+                                        }
+
+                                    </p>
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+                    </div>
+
+                )}
 
             </section>
 

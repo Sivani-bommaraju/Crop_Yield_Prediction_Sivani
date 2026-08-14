@@ -27,7 +27,6 @@ export default function PredictionSummary() {
 
       </div>
 
-      {/* Expected Yield */}
 
       <div className="bg-green-50 rounded-2xl p-5 mb-6">
 
@@ -45,7 +44,6 @@ export default function PredictionSummary() {
 
       </div>
 
-      {/* Confidence */}
 
       <div className="mb-6">
 
@@ -72,7 +70,6 @@ export default function PredictionSummary() {
 
       </div>
 
-      {/* Details */}
 
       <div className="space-y-4">
 

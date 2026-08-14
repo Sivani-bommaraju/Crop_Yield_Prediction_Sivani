@@ -5,17 +5,6 @@ from app.database.database import db
 
 predictions = db["predictions"]
 
-
-
-# load model
-
-# model = pickle.load(
-#     open(
-#         "app/ml/model.pkl",
-#         "rb"
-#     )
-# )
-
 model = None
 
 
