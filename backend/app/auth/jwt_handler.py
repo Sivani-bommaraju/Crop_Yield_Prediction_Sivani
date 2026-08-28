@@ -29,13 +29,28 @@ def create_access_token(data: dict):
 def verify_access_token(token: str):
 
     try:
+
         payload = jwt.decode(
             token,
             settings.JWT_SECRET,
             algorithms=[settings.JWT_ALGORITHM]
         )
 
+        # ----------------------------------------------------
+        # REQUIRE USER ID
+        # ----------------------------------------------------
+
+        user_id = (
+            payload.get("user_id")
+            or payload.get("sub")
+            or payload.get("id")
+        )
+
+        if not user_id:
+            return None
+
         return payload
 
     except JWTError:
+
         return None

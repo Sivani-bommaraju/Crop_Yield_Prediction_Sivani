@@ -17,10 +17,11 @@ import {getFarmerAdvisories} from "../services/farmerService";
 import { getFarmerProfile } from "../services/farmerService";
 
 import {
-  Wheat,
-  CloudSun,
-  BrainCircuit,
-  ScanSearch,
+    Wheat,
+    CloudSun,
+    BrainCircuit,
+    ScanSearch,
+    BarChart3,
 } from "lucide-react";
 
 export default function Home() {
@@ -217,6 +218,16 @@ useEffect(() => {
       button="Analyse Soil"
       onClick={() => navigate("/prediction#soil")}
     />
+
+
+    <FeatureCard
+    icon={<BarChart3 size={30} />}
+    title="Analytics Dashboard"
+    description="Explore crop productivity, seasonal trends, weather impact and AI-generated agricultural insights."
+    color="bg-emerald-600"
+    button="View Analytics"
+    onClick={() => navigate("/analytics")}
+/>
 
   </div>
 

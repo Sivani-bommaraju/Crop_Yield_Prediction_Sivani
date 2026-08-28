@@ -9,6 +9,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AgriculturalOfficerDashboard from "./pages/AgriculturalOfficerDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import YieldPrediction from "./pages/YieldPrediction";
+import Analytics from "./pages/Analytics";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/admin" element={<ProtectedRoute allowedRoles={["admin"]}><AdminDashboard /></ProtectedRoute>}/>
         <Route path="/officer" element={<ProtectedRoute allowedRoles={["agricultural_officer"]}><AgriculturalOfficerDashboard /></ProtectedRoute>}/>
         <Route path="/prediction" element={<YieldPrediction />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   );
