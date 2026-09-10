@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, auth
 
 cred = credentials.Certificate(
-    "firebase/serviceAccountKey.json"
+    "/etc/secrets/serviceAccountKey.json"
 )
 
 if not firebase_admin._apps:
