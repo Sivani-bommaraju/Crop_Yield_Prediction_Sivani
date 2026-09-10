@@ -7,7 +7,6 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app ./app
-COPY backend/firebase /app/firebase
 COPY backend/data ./data
 
 COPY ML/datasets /ML/datasets
