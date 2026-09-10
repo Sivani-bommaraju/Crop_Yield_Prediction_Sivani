@@ -5,13 +5,14 @@ import {
 } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCrcH3P-DG-ho9Fj1WoVYy8ytc4XKpF1ag",
-  authDomain: "yieldsense-ai-fdcb1.firebaseapp.com",
-  projectId: "yieldsense-ai-fdcb1",
-  storageBucket: "yieldsense-ai-fdcb1.firebasestorage.app",
-  messagingSenderId: "17734093712",
-  appId: "1:17734093712:web:3e8a7d406b90524d1bc115",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
+
 
 const app = initializeApp(firebaseConfig);
 

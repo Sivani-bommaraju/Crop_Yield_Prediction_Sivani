@@ -24,3 +24,7 @@ ML/__pycache__/
 
 *.ipynb
 .ipynb_checkpoints/
+
+# Firebase secrets
+backend/firebase/serviceAccountKey.json
+**/serviceAccountKey.json
