@@ -35,11 +35,7 @@ predictions = db["predictions"]
 # LOAD MODEL
 # ============================================================
 
-MODEL_PATH = (
-    Path(__file__).parent.parent
-    / "models"
-    / "yield_model.pkl"
-)
+MODEL_PATH = "/ML/model/yield_model.pkl"
 
 model = joblib.load(MODEL_PATH)
 

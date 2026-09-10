@@ -3,17 +3,13 @@ import joblib
 import pandas as pd
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+MODEL_PATH = "/ML/model/crop_recommendation_model.pkl"
 
-MODEL_PATH = os.path.join(
-    BASE_DIR,
-    "models",
-    "crop_recommendation_model.pkl"
-)
 saved = joblib.load(MODEL_PATH)
 
 model = saved["model"]
 feature_columns = saved["feature_columns"]
+
 
 def recommend_crop(data):
 
