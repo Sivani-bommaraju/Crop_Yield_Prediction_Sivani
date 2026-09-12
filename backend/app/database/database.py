@@ -4,7 +4,9 @@ import certifi
 
 client = MongoClient(
     settings.MONGODB_URI,
-    tlsCAFile=certifi.where()
+    tlsCAFile=certifi.where(),
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000
 )
 
 db = client[settings.DATABASE_NAME]
