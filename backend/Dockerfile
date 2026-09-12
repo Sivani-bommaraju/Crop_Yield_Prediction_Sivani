@@ -7,11 +7,12 @@ COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/app ./app
+
 COPY backend/data ./data
 
-COPY ML/datasets /ML/datasets
-COPY ML/model /ML/model
+COPY backend/models ./models
 
+COPY ML/datasets /ML/datasets
 
 EXPOSE 8000
 
